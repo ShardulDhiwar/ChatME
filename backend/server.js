@@ -79,7 +79,7 @@ const server = http.createServer(app);
 const corsOptions = {
   origin: [
     "http://localhost:3000",
-    "https://your-app-name.vercel.app", // Replace with your actual Vercel domain
+    "https://chatme.vercel.app", // Replace with your actual Vercel domain
   ],
   methods: ['GET', 'POST']
 };

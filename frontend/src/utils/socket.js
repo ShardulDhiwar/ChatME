@@ -7,13 +7,12 @@
 // frontend/src/utils/socket.js
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001';
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'https://chatme-8jpz.onrender.com';
 
 const socket = io(SOCKET_URL, {
-  transports: ['websocket', 'polling'],
+  transports: ['websocket'],
   upgrade: true,
-  rememberUpgrade: true,
-  timeout: 20000,
 });
 
 export default socket;
+
