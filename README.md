@@ -2,6 +2,8 @@
 
 A simple real-time chat application built with React and Socket.IO.
 
+🚀 **Live Demo**: [https://chat-me-omega.vercel.app/](https://chat-me-omega.vercel.app/)
+
 ## Features
 
 - Create unique chat rooms with shareable links
@@ -25,7 +27,11 @@ chat-app/
     └── package.json   # Backend dependencies
 ```
 
-## Setup and Running
+## Quick Start
+
+Want to try it out immediately? Visit the live demo at [https://chat-me-omega.vercel.app/](https://chat-me-omega.vercel.app/)
+
+## Local Development Setup
 
 ### Backend Setup
 
@@ -65,7 +71,7 @@ chat-app/
 
 ## Usage
 
-1. Open http://localhost:3000 in your browser
+1. Open the [live demo](https://chat-me-omega.vercel.app/) or http://localhost:3000 for local development
 2. Click "Create New Room" to generate a new chat room
 3. Share the room URL with others to chat together
 4. Enter a username when joining a room
@@ -77,4 +83,4 @@ chat-app/
 - Socket.IO
 - React Router
 - Node.js
-- Express 
+- Express
