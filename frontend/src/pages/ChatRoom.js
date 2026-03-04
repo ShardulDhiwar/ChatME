@@ -47,8 +47,8 @@
     .nb-login-title {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(4.5rem, 20vw, 6rem);
-      color: #111;
-      text-shadow: 5px 5px 0 #ff3c00;
+      color: #ff3c00;
+      text-shadow: 5px 5px 0 #ffd000;
       margin-bottom: 28px;
       letter-spacing: 0.05em;
       text-align: center;
