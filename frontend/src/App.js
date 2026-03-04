@@ -6,7 +6,7 @@ import ChatRoom from './pages/ChatRoom';
 function App() {
   return (
     <Router>
-      <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500">
+      <div style={{ width: '100%', minHeight: '100vh' }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/chat/:roomId" element={<ChatRoom />} />

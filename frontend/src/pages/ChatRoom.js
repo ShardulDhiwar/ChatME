@@ -15,6 +15,626 @@ import {
 } from 'lucide-react';
 import socket from '../utils/socket';
 
+const styles = `
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap');
+
+  .nb-chat-root {
+    font-family: 'Space Mono', monospace;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    background: #f5f0e8;
+  }
+
+  /* ── Username screen ── */
+  .nb-username-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f5f0e8;
+    background-image: repeating-linear-gradient(0deg,transparent,transparent 39px,#d4c9b0 39px,#d4c9b0 40px),
+      repeating-linear-gradient(90deg,transparent,transparent 39px,#d4c9b0 39px,#d4c9b0 40px);
+    padding: 24px;
+  }
+
+  .nb-login-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 10vw, 5.5rem);
+    color: #111;
+    text-shadow: 5px 5px 0 #ff3c00;
+    margin-bottom: 32px;
+    letter-spacing: 0.05em;
+  }
+
+  .nb-login-card {
+    background: #f5f0e8;
+    border: 3px solid #111;
+    box-shadow: 8px 8px 0 #111;
+    padding: 36px;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .nb-login-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .nb-login-input {
+    width: 100%;
+    padding: 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    border: 3px solid #111;
+    background: #fff;
+    outline: none;
+    box-sizing: border-box;
+    transition: box-shadow 0.1s;
+  }
+
+  .nb-login-input:focus { box-shadow: 4px 4px 0 #111; }
+  .nb-login-input::placeholder { color: #bbb; font-weight: 400; }
+
+  .nb-login-btn {
+    background: #ff3c00;
+    color: #fff;
+    border: 3px solid #111;
+    box-shadow: 5px 5px 0 #111;
+    padding: 18px;
+    font-family: 'Space Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+
+  .nb-login-btn:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 #111; }
+  .nb-login-btn:active { transform: translate(3px,3px); box-shadow: 2px 2px 0 #111; }
+
+  /* ── Header ── */
+  .nb-header {
+    background: #111;
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #111;
+    flex-shrink: 0;
+    z-index: 30;
+  }
+
+  .nb-header-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+
+  .nb-back-btn {
+    background: transparent;
+    border: 2px solid #ffd000;
+    color: #ffd000;
+    padding: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+  .nb-back-btn:hover { background: #ffd000; color: #111; }
+
+  .nb-avatar {
+    width: 42px;
+    height: 42px;
+    background: #ff3c00;
+    border: 2px solid #ffd000;
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .nb-online-dot {
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    width: 10px;
+    height: 10px;
+    background: #00e676;
+    border: 2px solid #111;
+  }
+
+  .nb-room-info { display: flex; flex-direction: column; min-width: 0; }
+
+  .nb-room-name {
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nb-copy-btn {
+    background: transparent;
+    border: none;
+    color: #ffd000;
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+  }
+  .nb-copy-btn:hover { color: #fff; }
+
+  .nb-online-label {
+    color: #00e676;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .nb-header-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+
+  .nb-icon-btn {
+    background: transparent;
+    border: 2px solid transparent;
+    color: #888;
+    padding: 7px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #aaa;
+    transition: all 0.1s;
+  }
+  .nb-icon-btn:hover { color: #ffd000; border-color: #ffd000; }
+  .nb-icon-btn.active { background: #ffd000; color: #111; border-color: #ffd000; }
+  .nb-icon-btn.danger:hover { color: #ff3c00; border-color: #ff3c00; }
+
+  /* ── Panels ── */
+  .nb-panel {
+    background: #fff;
+    border-bottom: 3px solid #111;
+    border-left: 0;
+    border-right: 0;
+    padding: 20px;
+    animation: slideDown 0.15s ease;
+    z-index: 20;
+  }
+
+  .nb-panel-title {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nb-badge {
+    background: #ffd000;
+    color: #111;
+    border: 2px solid #111;
+    padding: 1px 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+  }
+
+  .nb-users-list { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .nb-user-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f5f0e8;
+    border: 2px solid #111;
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .nb-user-dot { width: 8px; height: 8px; background: #00e676; border: 1px solid #111; flex-shrink: 0; }
+
+  .nb-search-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: 2px solid #111;
+    background: #f5f0e8;
+    outline: none;
+    box-sizing: border-box;
+  }
+  .nb-search-input:focus { background: #fff; }
+  .nb-search-input::placeholder { color: #bbb; font-weight: 400; }
+
+  /* ── Messages ── */
+  .nb-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #f5f0e8;
+    background-image: repeating-linear-gradient(0deg,transparent,transparent 39px,#e0d8c8 39px,#e0d8c8 40px);
+  }
+
+  @media (max-width: 768px) {
+    .nb-messages { padding: 20px 16px; }
+    .nb-header { padding: 12px 16px; }
+    .nb-input-area { padding: 14px 16px 18px; }
+  }
+
+  .nb-system-msg {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+  .nb-system-tag {
+    background: #111;
+    color: #ffd000;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 3px 12px;
+  }
+
+  .nb-msg-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    animation: fadeInMsg 0.2s ease;
+  }
+  .nb-msg-row.me { align-items: flex-end; }
+  .nb-msg-row.them { align-items: flex-start; }
+
+  .nb-msg-inner {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    max-width: min(60%, 700px);
+  }
+
+  @media (max-width: 768px) {
+    .nb-msg-inner { max-width: 90%; }
+  }
+  .nb-msg-row.me .nb-msg-inner { flex-direction: row-reverse; }
+
+  .nb-bubble-wrap { position: relative; max-width: 100%; }
+
+  .nb-bubble {
+    padding: 14px 18px;
+    border: 3px solid #111;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.6;
+    word-break: break-word;
+    position: relative;
+  }
+  .nb-bubble.me {
+    background: #ff3c00;
+    color: #fff;
+    box-shadow: 4px 4px 0 #111;
+  }
+  .nb-bubble.them {
+    background: #fff;
+    color: #111;
+    box-shadow: 4px 4px 0 #111;
+  }
+
+  .nb-sender-name {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #ff3c00;
+    margin-bottom: 6px;
+  }
+
+  .nb-reply-preview {
+    border-left: 4px solid;
+    padding: 6px 10px;
+    margin-bottom: 10px;
+    font-size: 0.7rem;
+  }
+  .nb-bubble.me .nb-reply-preview { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+  .nb-bubble.them .nb-reply-preview { border-color: #ff3c00; background: #fff8e1; color: #555; }
+
+  .nb-reply-who { font-weight: 700; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2px; display: flex; align-items: center; gap: 4px; }
+  .nb-reply-text { font-style: italic; opacity: 0.7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .nb-reactions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    position: absolute;
+    bottom: -14px;
+  }
+  .nb-msg-row.me .nb-reactions { right: 0; }
+  .nb-msg-row.them .nb-reactions { left: 0; }
+
+  .nb-reaction-badge {
+    background: #fff;
+    border: 2px solid #111;
+    padding: 1px 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    transition: transform 0.1s;
+  }
+  .nb-reaction-badge:hover { transform: scale(1.1); }
+  .nb-reaction-badge.mine { background: #ffd000; }
+
+  .nb-reaction-picker {
+    position: absolute;
+    z-index: 50;
+    background: #fff;
+    border: 3px solid #111;
+    box-shadow: 5px 5px 0 #111;
+    padding: 8px;
+    display: flex;
+    gap: 4px;
+    top: -52px;
+    animation: slideUp 0.15s ease;
+  }
+  .nb-msg-row.me .nb-reaction-picker { right: 0; }
+  .nb-msg-row.them .nb-reaction-picker { left: 0; }
+
+  .nb-emoji-btn-sm {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    background: transparent;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+  .nb-emoji-btn-sm:hover { background: #f5f0e8; border-color: #111; transform: scale(1.2); }
+
+  .nb-side-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+  }
+  .nb-msg-row:hover .nb-side-actions { opacity: 1; }
+
+  .nb-action-btn {
+    background: #fff;
+    border: 2px solid #111;
+    color: #111;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+  .nb-action-btn:hover { background: #ffd000; }
+
+  .nb-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #aaa;
+  }
+  .nb-msg-row.me .nb-meta { flex-direction: row-reverse; }
+
+  /* ── Typing ── */
+  .nb-typing {
+    background: #111;
+    padding: 6px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: fadeInMsg 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .nb-typing-dots { display: flex; gap: 4px; }
+  .nb-typing-dot {
+    width: 6px;
+    height: 6px;
+    background: #ffd000;
+    animation: bounce 0.8s infinite;
+  }
+  .nb-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+  .nb-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+  .nb-typing-text { color: #ffd000; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+
+  /* ── Input area ── */
+  .nb-input-area {
+    background: #fff;
+    border-top: 3px solid #111;
+    padding: 16px 20px 20px;
+    flex-shrink: 0;
+  }
+
+  .nb-reply-banner {
+    background: #ffd000;
+    border: 2px solid #111;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideDown 0.15s ease;
+  }
+
+  .nb-reply-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #111; }
+  .nb-reply-quote { font-size: 0.75rem; color: #444; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+
+  .nb-cancel-reply {
+    background: #111;
+    border: none;
+    color: #ffd000;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-left: 12px;
+    transition: background 0.1s;
+  }
+  .nb-cancel-reply:hover { background: #ff3c00; }
+
+  .nb-emoji-picker-popup {
+    background: #fff;
+    border: 3px solid #111;
+    box-shadow: 6px 6px 0 #111;
+    padding: 12px;
+    position: absolute;
+    bottom: 90px;
+    left: 20px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    z-index: 50;
+    animation: slideUp 0.15s ease;
+  }
+
+  .nb-emoji-btn {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: transparent;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+  .nb-emoji-btn:hover { background: #f5f0e8; border-color: #111; transform: scale(1.15); }
+
+  .nb-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+  }
+
+  .nb-input-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    border: 3px solid #111;
+    background: #f5f0e8;
+    transition: background 0.1s, box-shadow 0.1s;
+  }
+  .nb-input-wrap:focus-within { background: #fff; box-shadow: 4px 4px 0 #111; }
+
+  .nb-text-input {
+    flex: 1;
+    padding: 14px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border: none;
+    background: transparent;
+    outline: none;
+    color: #111;
+  }
+  .nb-text-input::placeholder { color: #bbb; font-weight: 400; }
+
+  .nb-emoji-toggle {
+    background: transparent;
+    border: none;
+    color: #888;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    border-left: 2px solid #ddd;
+    transition: color 0.1s;
+  }
+  .nb-emoji-toggle:hover { color: #ff3c00; }
+
+  .nb-send-btn {
+    background: #ff3c00;
+    border: 3px solid #111;
+    box-shadow: 4px 4px 0 #111;
+    color: #fff;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    flex-shrink: 0;
+  }
+  .nb-send-btn:hover:not(:disabled) { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #111; }
+  .nb-send-btn:active:not(:disabled) { transform: translate(2px,2px); box-shadow: 2px 2px 0 #111; }
+  .nb-send-btn:disabled { background: #ccc; opacity: 0.5; cursor: not-allowed; box-shadow: 2px 2px 0 #888; }
+
+  /* ── Empty state ── */
+  .nb-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; opacity: 0.35; }
+  .nb-empty-icon { font-size: 2.5rem; margin-bottom: 8px; }
+  .nb-empty-text { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
+
+  /* ── Keyframes ── */
+  @keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-5px); }
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInMsg {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+`;
+
 function ChatRoom() {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
@@ -30,8 +650,6 @@ function ChatRoom() {
   const [showReactionPicker, setShowReactionPicker] = useState(null);
 
   const messagesEndRef = useRef(null);
-
-  // Refs for click-outside detection
   const emojiPickerRef = useRef(null);
   const emojiToggleRef = useRef(null);
   const usersPanelRef = useRef(null);
@@ -48,14 +666,9 @@ function ChatRoom() {
 
   useEffect(() => {
     if (!roomId || !username || !isUsernameSet) return;
-
-    console.log('Joining room:', roomId);
     socket.emit('join_room', { roomId, username });
 
-    const handleMessage = (data) => {
-      setMessages((prevMessages) => [...prevMessages, data]);
-    };
-
+    const handleMessage = (data) => setMessages((prev) => [...prev, data]);
     const handleTyping = (data) => {
       if (data.username !== username) {
         setTypingStatus(`${data.username} is typing...`);
@@ -63,70 +676,25 @@ function ChatRoom() {
         window.typingTimeout = setTimeout(() => setTypingStatus(''), 1500);
       }
     };
-
-    const handleUsersUpdate = (users) => {
-      setOnlineUsers(users);
-    };
-
-    const handleUserJoined = (data) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          type: 'system',
-          message: `${data.username} joined the room`,
-          timestamp: data.timestamp,
-        },
-      ]);
-    };
-
-    const handleUserLeft = (data) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          type: 'system',
-          message: `${data.username} left the room`,
-          timestamp: data.timestamp,
-        },
-      ]);
-    };
-
-    const handleReactionAdded = (data) => {
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) => {
-          if (msg.id === data.messageId) {
-            const reactions = { ...msg.reactions };
-            if (!reactions[data.emoji]) {
-              reactions[data.emoji] = [];
-            }
-            if (!reactions[data.emoji].includes(data.username)) {
-              reactions[data.emoji].push(data.username);
-            }
-            return { ...msg, reactions };
-          }
-          return msg;
-        })
-      );
-    };
-
-    const handleReactionRemoved = (data) => {
-      setMessages((prevMessages) =>
-        prevMessages.map((msg) => {
-          if (msg.id === data.messageId) {
-            const reactions = { ...msg.reactions };
-            if (reactions[data.emoji]) {
-              reactions[data.emoji] = reactions[data.emoji].filter(
-                (user) => user !== data.username
-              );
-              if (reactions[data.emoji].length === 0) {
-                delete reactions[data.emoji];
-              }
-            }
-            return { ...msg, reactions };
-          }
-          return msg;
-        })
-      );
-    };
+    const handleUsersUpdate = (users) => setOnlineUsers(users);
+    const handleUserJoined = (data) => setMessages((prev) => [...prev, { type: 'system', message: `${data.username} joined the room`, timestamp: data.timestamp }]);
+    const handleUserLeft = (data) => setMessages((prev) => [...prev, { type: 'system', message: `${data.username} left the room`, timestamp: data.timestamp }]);
+    const handleReactionAdded = (data) => setMessages((prev) => prev.map((msg) => {
+      if (msg.id !== data.messageId) return msg;
+      const reactions = { ...msg.reactions };
+      if (!reactions[data.emoji]) reactions[data.emoji] = [];
+      if (!reactions[data.emoji].includes(data.username)) reactions[data.emoji].push(data.username);
+      return { ...msg, reactions };
+    }));
+    const handleReactionRemoved = (data) => setMessages((prev) => prev.map((msg) => {
+      if (msg.id !== data.messageId) return msg;
+      const reactions = { ...msg.reactions };
+      if (reactions[data.emoji]) {
+        reactions[data.emoji] = reactions[data.emoji].filter((u) => u !== data.username);
+        if (reactions[data.emoji].length === 0) delete reactions[data.emoji];
+      }
+      return { ...msg, reactions };
+    }));
 
     socket.on('chat message', handleMessage);
     socket.on('typing', handleTyping);
@@ -147,23 +715,13 @@ function ChatRoom() {
     };
   }, [roomId, username, isUsernameSet]);
 
-  // Click outside to close panels
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (showEmojiPicker && emojiPickerRef.current && !emojiPickerRef.current.contains(event.target) && emojiToggleRef.current && !emojiToggleRef.current.contains(event.target)) {
-        setShowEmojiPicker(false);
-      }
-      if (showUsers && usersPanelRef.current && !usersPanelRef.current.contains(event.target) && usersToggleRef.current && !usersToggleRef.current.contains(event.target)) {
-        setShowUsers(false);
-      }
-      if (showSearch && searchPanelRef.current && !searchPanelRef.current.contains(event.target) && searchToggleRef.current && !searchToggleRef.current.contains(event.target)) {
-        setShowSearch(false);
-      }
-      if (showReactionPicker && reactionPickerRef.current && !reactionPickerRef.current.contains(event.target)) {
-        setShowReactionPicker(null);
-      }
+      if (showEmojiPicker && emojiPickerRef.current && !emojiPickerRef.current.contains(event.target) && emojiToggleRef.current && !emojiToggleRef.current.contains(event.target)) setShowEmojiPicker(false);
+      if (showUsers && usersPanelRef.current && !usersPanelRef.current.contains(event.target) && usersToggleRef.current && !usersToggleRef.current.contains(event.target)) setShowUsers(false);
+      if (showSearch && searchPanelRef.current && !searchPanelRef.current.contains(event.target) && searchToggleRef.current && !searchToggleRef.current.contains(event.target)) setShowSearch(false);
+      if (showReactionPicker && reactionPickerRef.current && !reactionPickerRef.current.contains(event.target)) setShowReactionPicker(null);
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showEmojiPicker, showUsers, showSearch, showReactionPicker]);
@@ -172,21 +730,19 @@ function ChatRoom() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const sendMessage = () => {
     if (message.trim() && username) {
-      const messageData = {
-        room: roomId,
-        username,
-        message,
-        timestamp: new Date().toISOString(),
-        replyTo: replyingTo,
-      };
+      const messageData = { room: roomId, username, message, timestamp: new Date().toISOString(), replyTo: replyingTo };
       socket.emit('chat message', messageData);
       setMessage('');
       setReplyingTo(null);
       setShowEmojiPicker(false);
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    sendMessage();
   };
 
   const handleUsernameSubmit = (e) => {
@@ -196,35 +752,25 @@ function ChatRoom() {
 
   const copyRoomId = () => {
     navigator.clipboard.writeText(roomId);
-    alert('Room ID copied to clipboard!');
+    alert('Room ID copied!');
   };
 
   const addEmoji = (emoji) => setMessage((prev) => prev + emoji);
 
   const clearChat = () => {
-    if (window.confirm('Are you sure you want to clear your chat history?')) {
-      setMessages([]);
-    }
+    if (window.confirm('Clear chat history?')) setMessages([]);
   };
 
   const exportChat = () => {
-    const chatText = messages.map((msg) => {
-      if (msg.type === 'system') return `[${new Date(msg.timestamp).toLocaleString()}] ${msg.message}`;
-      return `[${new Date(msg.timestamp).toLocaleString()}] ${msg.username}: ${msg.message}`;
-    }).join('\n');
+    const chatText = messages.map((msg) => msg.type === 'system' ? `[${new Date(msg.timestamp).toLocaleString()}] ${msg.message}` : `[${new Date(msg.timestamp).toLocaleString()}] ${msg.username}: ${msg.message}`).join('\n');
     const blob = new Blob([chatText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `chat-${roomId}-${Date.now()}.txt`;
-    a.click();
+    a.href = url; a.download = `chat-${roomId}-${Date.now()}.txt`; a.click();
     URL.revokeObjectURL(url);
   };
 
-  const handleReply = (msg) => {
-    setReplyingTo({ id: msg.id, username: msg.username, message: msg.message });
-  };
-
+  const handleReply = (msg) => setReplyingTo({ id: msg.id, username: msg.username, message: msg.message });
   const cancelReply = () => setReplyingTo(null);
 
   const handleReaction = (messageId, emoji) => {
@@ -232,324 +778,289 @@ function ChatRoom() {
     if (!msg) return;
     const reactions = msg.reactions || {};
     const hasReacted = reactions[emoji]?.includes(username);
-    if (hasReacted) {
-      socket.emit('remove_reaction', { room: roomId, messageId, emoji, username });
-    } else {
-      socket.emit('add_reaction', { room: roomId, messageId, emoji, username });
-    }
+    if (hasReacted) socket.emit('remove_reaction', { room: roomId, messageId, emoji, username });
+    else socket.emit('add_reaction', { room: roomId, messageId, emoji, username });
     setShowReactionPicker(null);
   };
 
   const filteredMessages = searchQuery
-    ? messages.filter((msg) =>
-      msg.message?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      msg.username?.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    ? messages.filter((msg) => msg.message?.toLowerCase().includes(searchQuery.toLowerCase()) || msg.username?.toLowerCase().includes(searchQuery.toLowerCase()))
     : messages;
 
   if (!isUsernameSet) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#6a5af9] via-[#865cf6] to-[#d946ef] p-6 lg:p-12">
-        <h2 className="text-white text-4xl mb-12 drop-shadow-xl animate-fadeInDown font-black tracking-tighter text-center">
-          ChatME
-        </h2>
-        <form onSubmit={handleUsernameSubmit} className="bg-white p-10 rounded-[40px] shadow-2xl flex flex-col gap-8 w-full max-w-md animate-fadeInUp">
-          <div className="space-y-2">
-            <label className="text-gray-500 font-bold text-sm ml-2">WHO ARE YOU?</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter username..."
-              maxLength={20}
-              className="w-full p-6 text-lg border-none bg-gray-50 rounded-[28px] outline-none transition-all duration-300 font-medium focus:ring-4 focus:ring-indigo-500/10 placeholder-gray-300"
-            />
+      <>
+        <style>{styles}</style>
+        <div className="nb-username-screen">
+          <h2 className="nb-login-title">ChatME</h2>
+          <div className="nb-login-card">
+            <form onSubmit={handleUsernameSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <label className="nb-login-label">Who are you?</label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Enter username..."
+                  maxLength={20}
+                  className="nb-login-input"
+                />
+              </div>
+              <button type="submit" className="nb-login-btn">
+                Enter Room →
+              </button>
+            </form>
           </div>
-          <button type="submit" className="bg-[#6a5af9] text-white py-6 px-10 text-xl font-bold rounded-[30px] cursor-pointer transition-all duration-300 shadow-xl hover:scale-[1.02] active:scale-[0.98] tracking-wide">
-            Continue
-          </button>
-        </form>
-      </div>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="flex flex-col h-screen max-w-full mx-auto bg-[#f6f6f9] border-6 border-[#00000] rounded-2xl overflow-hidden md:max-w-2xl md:shadow-2xl">
-      {/* Refined Header Design */}
-      <div className="bg-white px-6 py-4 flex justify-between items-center shadow-sm z-30 transition-all duration-300 rounded-b-[40px]">
-        <div className="flex items-center gap-4 flex-1 min-w-0">
-          <button onClick={() => navigate('/')} className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100 flex-shrink-0" title="Leave Room">
-            <ArrowLeft size={24} />
-          </button>
-          <div className="relative flex-shrink-0">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#6a5af9] to-[#d946ef] rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md border-2 border-white">
+    <>
+      <style>{styles}</style>
+      <div className="nb-chat-root">
+
+        {/* Header */}
+        <div className="nb-header">
+          <div className="nb-header-left">
+            <button onClick={() => navigate('/')} className="nb-back-btn" title="Leave Room">
+              <ArrowLeft size={20} />
+            </button>
+            <div className="nb-avatar">
               {username.charAt(0).toUpperCase()}
+              <div className="nb-online-dot" />
             </div>
-            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white animate-pulse"></div>
-          </div>
-          <div className="flex flex-col min-w-0">
-            <div className="flex items-center gap-2">
-              <h2 className="text-gray-800 text-lg font-bold leading-tight truncate">Room: {roomId.slice(0, 8)}</h2>
-              <button onClick={copyRoomId} className="text-gray-300 hover:text-indigo-500 transition-colors" title="Copy Room ID">
-                <Copy size={14} />
-              </button>
+            <div className="nb-room-info">
+              <div className="nb-room-name">
+                #{roomId.slice(0, 8)}
+                <button onClick={copyRoomId} className="nb-copy-btn" title="Copy Room ID">
+                  <Copy size={12} />
+                </button>
+              </div>
+              <span className="nb-online-label">● Online</span>
             </div>
-            <span className="text-emerald-500 text-xs font-semibold uppercase tracking-widest">Online</span>
+          </div>
+
+          <div className="nb-header-actions">
+            <button
+              ref={searchToggleRef}
+              className={`nb-icon-btn ${showSearch ? 'active' : ''}`}
+              onClick={() => setShowSearch(!showSearch)}
+              title="Search"
+            >
+              <Search size={18} />
+            </button>
+            <button
+              ref={usersToggleRef}
+              className={`nb-icon-btn ${showUsers ? 'active' : ''}`}
+              onClick={() => setShowUsers(!showUsers)}
+              title="Users"
+            >
+              <Users size={18} />
+              <span>{onlineUsers.length}</span>
+            </button>
+            <button onClick={exportChat} className="nb-icon-btn" title="Export" style={{ display: 'none' }}>
+              <Download size={18} />
+            </button>
+            <button onClick={clearChat} className="nb-icon-btn danger" title="Clear Chat">
+              <Trash2 size={18} />
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <button
-            ref={searchToggleRef}
-            className={`p-2 rounded-full transition-all ${showSearch ? 'bg-indigo-50 text-indigo-500' : 'text-gray-400 hover:bg-gray-100'}`}
-            onClick={() => setShowSearch(!showSearch)}
-            title="Search Messages"
-          >
-            <Search size={22} />
-          </button>
-          <button
-            ref={usersToggleRef}
-            className={`p-2 rounded-full transition-all flex items-center gap-1.5 ${showUsers ? 'bg-indigo-50 text-indigo-500' : 'text-gray-400 hover:bg-gray-100'}`}
-            onClick={() => setShowUsers(!showUsers)}
-            title="Online Users"
-          >
-            <Users size={22} />
-            <span className="text-xs font-bold">{onlineUsers.length}</span>
-          </button>
-          <div className="h-8 w-px bg-gray-100 mx-1 hidden sm:block"></div>
-          <button onClick={exportChat} className="text-gray-400 hover:text-indigo-500 transition-all p-2 rounded-full hover:bg-indigo-50 hidden sm:block" title="Export Chat">
-            <Download size={22} />
-          </button>
-          <button onClick={clearChat} className="text-gray-400 hover:text-rose-500 transition-all p-2 rounded-full hover:bg-rose-50 hidden sm:block" title="Clear Chat">
-            <Trash2 size={22} />
-          </button>
-        </div>
-      </div>
-
-      {/* Slide-down UI Panels */}
-      {showUsers && (
-        <div ref={usersPanelRef} className="bg-white m-4 mt-2 p-6 rounded-[30px] shadow-xl border border-gray-100 animate-slideDown z-20 overflow-hidden">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-indigo-500 font-bold text-lg uppercase tracking-tight">Active Members</h3>
-            <span className="bg-indigo-50 text-indigo-500 px-3 py-1 rounded-full text-xs font-black">{onlineUsers.length}</span>
-          </div>
-          <ul className="flex flex-wrap gap-3">
-            {onlineUsers.map((user, index) => (
-              <li key={index} className="flex items-center gap-2 p-2 px-4 bg-gray-50 rounded-2xl text-[13px] font-bold text-gray-600 border border-transparent hover:border-indigo-100 transition-all cursor-default">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-                {user}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {showSearch && (
-        <div ref={searchPanelRef} className="bg-white m-4 mt-2 p-4 rounded-full shadow-xl border border-gray-100 flex gap-3 animate-slideDown z-20">
-          <input
-            type="text"
-            placeholder="Search in conversation..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 px-6 bg-transparent text-sm outline-none font-medium placeholder-gray-300"
-          />
-          {searchQuery && (
-            <button onClick={() => setSearchQuery('')} className="w-10 h-10 flex items-center justify-center bg-gray-100 text-gray-500 rounded-full hover:bg-gray-200 transition-all"><X size={16} /></button>
-          )}
-        </div>
-      )}
-
-      {/* Main Chat Area */}
-      <div className="flex-1 overflow-y-auto px-6 py-8 flex flex-col gap-6 bg-[#f6f6f9] scroll-smooth">
-        {filteredMessages.length === 0 && searchQuery && (
-          <div className="flex flex-col items-center justify-center p-20 opacity-30">
-            <Search size={48} className="mb-4" />
-            <span className="font-bold italic">No results found</span>
+        {/* Users Panel */}
+        {showUsers && (
+          <div ref={usersPanelRef} className="nb-panel">
+            <div className="nb-panel-title">
+              Active Members
+              <span className="nb-badge">{onlineUsers.length}</span>
+            </div>
+            <div className="nb-users-list">
+              {onlineUsers.map((user, i) => (
+                <div key={i} className="nb-user-chip">
+                  <div className="nb-user-dot" />
+                  {user}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
-        {filteredMessages.map((msg, index) => {
-          if (msg.type === 'system') {
+        {/* Search Panel */}
+        {showSearch && (
+          <div ref={searchPanelRef} className="nb-panel" style={{ padding: '12px 20px' }}>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <input
+                type="text"
+                placeholder="Search messages..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="nb-search-input"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="nb-action-btn">
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Messages */}
+        <div className="nb-messages">
+          {filteredMessages.length === 0 && searchQuery && (
+            <div className="nb-empty">
+              <div className="nb-empty-icon">🔍</div>
+              <div className="nb-empty-text">No results found</div>
+            </div>
+          )}
+
+          {filteredMessages.map((msg, index) => {
+            if (msg.type === 'system') {
+              return (
+                <div key={index} className="nb-system-msg">
+                  <span className="nb-system-tag">{msg.message}</span>
+                </div>
+              );
+            }
+
+            const isMe = msg.username === username;
+
             return (
-              <div key={index} className="text-center my-4 animate-fadeIn">
-                <span className="bg-gray-200/50 text-gray-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider">
-                  {msg.message}
-                </span>
-              </div>
-            );
-          }
-
-          const isMe = msg.username === username;
-
-          return (
-            <div key={msg.id || index} className={`group flex flex-col mb-4 animate-slideIn ${isMe ? 'items-end' : 'items-start'}`}>
-              <div className={`flex items-center gap-3 max-w-[90%] md:max-w-[85%] ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className="relative max-w-full">
-                  {/* Reaction Picker Popup - Now anchored relative to bubble */}
-                  {showReactionPicker === msg.id && (
-                    <div ref={reactionPickerRef} className={`absolute z-50 bg-white/95 backdrop-blur-xl rounded-[28px] p-2 shadow-2xl flex gap-1 animate-slideUp border border-white/50 -top-14 ${isMe ? 'right-0' : 'left-0'
-                      }`}>
-                      {reactionEmojis.map((emoji) => (
-                        <button
-                          key={emoji}
-                          onClick={() => handleReaction(msg.id, emoji)}
-                          className="w-9 h-9 flex items-center justify-center text-lg hover:bg-gray-50 rounded-full transition-all hover:scale-[1.25]"
-                        >
-                          {emoji}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Message Bubble */}
-                  <div className={`p-4 px-6 shadow-sm break-words relative transition-all duration-300 ${isMe
-                      ? 'bg-[#6a5af9] text-white rounded-[26px] rounded-tr-[4px] shadow-indigo-200'
-                      : 'bg-white text-gray-800 rounded-[26px] rounded-tl-[4px] shadow-gray-200 border border-white'
-                    }`}>
-                    {/* Compact Reply Preview */}
-                    {msg.replyTo && (
-                      <div className={`mb-3 p-3 rounded-[16px] border-l-4 text-[11px] leading-snug animate-fadeIn transition-all ${isMe ? 'bg-white/10 border-white/40 text-white/90' : 'bg-indigo-50/50 border-indigo-500 text-gray-500'
-                        }`}>
-                        <div className="font-bold opacity-80 mb-1 flex items-center gap-1">
-                          <Reply size={10} /> {msg.replyTo.username}
-                        </div>
-                        <div className="truncate opacity-70 italic">"{msg.replyTo.message}"</div>
-                      </div>
-                    )}
-
-                    {!isMe && (
-                      <span className="block text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500 mb-2 leading-none">{msg.username}</span>
-                    )}
-
-                    <p className="text-[15px] leading-relaxed font-medium">{msg.message}</p>
-
-                    {/* Reaction Badges */}
-                    {msg.reactions && Object.keys(msg.reactions).length > 0 && (
-                      <div className={`flex flex-wrap gap-1.5 absolute -bottom-3 ${isMe ? 'right-0' : 'left-0'}`}>
-                        {Object.entries(msg.reactions).map(([emoji, users]) => (
-                          <button
-                            key={emoji}
-                            className={`flex items-center gap-1 border-2 px-2 py-0.5 rounded-full text-[11px] font-bold transition-all hover:scale-110 ${users.includes(username)
-                                ? 'bg-[#6a5af9] text-white border-[#6a5af9]'
-                                : 'bg-white text-gray-400 border-gray-100 hover:border-indigo-100'
-                              }`}
-                            onClick={() => handleReaction(msg.id, emoji)}
-                          >
-                            {emoji} {users.length}
-                          </button>
+              <div key={msg.id || index} className={`nb-msg-row ${isMe ? 'me' : 'them'}`}>
+                <div className="nb-msg-inner">
+                  <div className="nb-bubble-wrap">
+                    {/* Reaction Picker */}
+                    {showReactionPicker === msg.id && (
+                      <div ref={reactionPickerRef} className="nb-reaction-picker">
+                        {reactionEmojis.map((emoji) => (
+                          <button key={emoji} onClick={() => handleReaction(msg.id, emoji)} className="nb-emoji-btn-sm">{emoji}</button>
                         ))}
                       </div>
                     )}
+
+                    {/* Bubble */}
+                    <div className={`nb-bubble ${isMe ? 'me' : 'them'}`}>
+                      {/* Reply preview */}
+                      {msg.replyTo && (
+                        <div className="nb-reply-preview">
+                          <div className="nb-reply-who"><Reply size={9} /> {msg.replyTo.username}</div>
+                          <div className="nb-reply-text">"{msg.replyTo.message}"</div>
+                        </div>
+                      )}
+
+                      {!isMe && <div className="nb-sender-name">{msg.username}</div>}
+
+                      <p style={{ margin: 0 }}>{msg.message}</p>
+
+                      {/* Reactions */}
+                      {msg.reactions && Object.keys(msg.reactions).length > 0 && (
+                        <div className="nb-reactions">
+                          {Object.entries(msg.reactions).map(([emoji, users]) => (
+                            <button
+                              key={emoji}
+                              className={`nb-reaction-badge ${users.includes(username) ? 'mine' : ''}`}
+                              onClick={() => handleReaction(msg.id, emoji)}
+                            >
+                              {emoji} {users.length}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Side actions */}
+                  <div className="nb-side-actions">
+                    <button onClick={() => handleReply(msg)} className="nb-action-btn" title="Reply">
+                      <Reply size={13} />
+                    </button>
+                    <button onClick={() => setShowReactionPicker(showReactionPicker === msg.id ? null : msg.id)} className="nb-action-btn" title="React">
+                      <Smile size={13} />
+                    </button>
                   </div>
                 </div>
 
-                {/* Side Actions (Reply/React next to bubble) */}
-                <div className={`flex flex-col gap-1.5 transition-all duration-300 opacity-0 group-hover:opacity-100 group-active:opacity-100 flex-shrink-0`}>
-                  <button
-                    onClick={() => handleReply(msg)}
-                    className="p-2.5 bg-white text-gray-400 hover:text-indigo-500 rounded-full shadow-md transition-all hover:scale-110 active:scale-95"
-                    title="Reply"
-                  >
-                    <Reply size={16} />
-                  </button>
-                  <button
-                    onClick={() => setShowReactionPicker(showReactionPicker === msg.id ? null : msg.id)}
-                    className="p-2.5 bg-white text-gray-400 hover:text-indigo-500 rounded-full shadow-md transition-all hover:scale-110 active:scale-95"
-                    title="React"
-                  >
-                    <Smile size={16} />
-                  </button>
+                {/* Meta row */}
+                <div className="nb-meta">
+                  <span>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  {isMe && <CheckCheck size={12} style={{ color: '#ff3c00' }} />}
                 </div>
               </div>
-
-              {/* Time and Status Label */}
-              <div className={`mt-2 flex items-center gap-1.5 px-2 ${isMe ? 'flex-row-reverse' : ''}`}>
-                <span className="text-[10px] font-bold text-gray-300 tabular-nums lowercase">
-                  {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
-                {isMe && <CheckCheck size={14} className="text-[#6a5af9] opacity-80" />}
-              </div>
-            </div>
-          );
-        })}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Typing Indicator */}
-      {typingStatus && (
-        <div className="bg-white/80 backdrop-blur px-6 py-2 border-t border-gray-50 flex items-center gap-3 animate-fadeIn">
-          <div className="flex gap-1">
-            <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce"></div>
-            <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
-            <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
-          </div>
-          <span className="text-[11px] font-bold text-indigo-500/60 uppercase tracking-tighter italic">{typingStatus}</span>
+            );
+          })}
+          <div ref={messagesEndRef} />
         </div>
-      )}
 
-      {/* Input Area Group */}
-      <div className="bg-white pt-2 pb-8 px-6 transition-all duration-300 rounded-t-[40px] shadow-[0_-20px_40px_-20px_rgba(0,0,0,0.05)]">
-        {/* Reply Preview Banner */}
-        {replyingTo && (
-          <div className="mb-4 bg-gray-50 p-4 rounded-[24px] flex justify-between items-center border border-gray-100 animate-slideDown">
-            <div className="flex-1 pr-4">
-              <span className="text-[10px] font-black uppercase tracking-widest text-[#6a5af9]">Replying to {replyingTo.username}</span>
-              <p className="text-xs text-gray-400 truncate mt-1">{replyingTo.message}</p>
+        {/* Typing indicator */}
+        {typingStatus && (
+          <div className="nb-typing">
+            <div className="nb-typing-dots">
+              <div className="nb-typing-dot" />
+              <div className="nb-typing-dot" />
+              <div className="nb-typing-dot" />
             </div>
-            <button onClick={cancelReply} className="w-8 h-8 flex items-center justify-center bg-white text-rose-500 rounded-full shadow-sm hover:bg-rose-50 transition-all">
-              <X size={14} />
-            </button>
+            <span className="nb-typing-text">{typingStatus}</span>
           </div>
         )}
 
-        {/* Small Emoji Picker Popup */}
-        {showEmojiPicker && (
-          <div ref={emojiPickerRef} className="absolute bottom-28 left-1/2 -translate-x-1/2 w-[280px] bg-white rounded-[32px] p-4 shadow-2xl grid grid-cols-5 gap-3 animate-slideUp z-50 border border-gray-100">
-            {emojis.map((emoji, index) => (
-              <button key={index} onClick={() => addEmoji(emoji)} className="w-10 h-10 flex items-center justify-center text-xl hover:bg-indigo-50 rounded-xl transition-all hover:scale-125">
-                {emoji}
-              </button>
-            ))}
-          </div>
-        )}
+        {/* Input area */}
+        <div className="nb-input-area" style={{ position: 'relative' }}>
+          {/* Reply banner */}
+          {replyingTo && (
+            <div className="nb-reply-banner">
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="nb-reply-label">↩ Replying to {replyingTo.username}</div>
+                <div className="nb-reply-quote">{replyingTo.message}</div>
+              </div>
+              <button onClick={cancelReply} className="nb-cancel-reply"><X size={13} /></button>
+            </div>
+          )}
 
-        {/* Pill Input Design */}
-        <form onSubmit={handleSubmit} className="flex items-center gap-3 relative">
-          <div className="flex-1 bg-[#f0f2f7] rounded-[35px] flex items-center px-6 py-4 transition-all focus-within:bg-white focus-within:ring-4 focus-within:ring-indigo-100 focus-within:shadow-indigo-50">
-            <input
-              type="text"
-              value={message}
-              onChange={(e) => {
-                setMessage(e.target.value);
-                socket.emit('typing', { room: roomId, username });
-              }}
-              placeholder="Type here..."
-              maxLength={500}
-              className="flex-1 bg-transparent border-none outline-none text-[15px] font-medium placeholder-gray-400"
-            />
+          {/* Emoji picker */}
+          {showEmojiPicker && (
+            <div ref={emojiPickerRef} className="nb-emoji-picker-popup">
+              {emojis.map((emoji, i) => (
+                <button key={i} onClick={() => addEmoji(emoji)} className="nb-emoji-btn">{emoji}</button>
+              ))}
+            </div>
+          )}
 
-            <div className="flex items-center gap-2 pl-3 border-l border-gray-200 ml-2">
+          <form onSubmit={handleSubmit} className="nb-input-row">
+            <div className="nb-input-wrap">
+              <input
+                type="text"
+                value={message}
+                onChange={(e) => {
+                  setMessage(e.target.value);
+                  socket.emit('typing', { room: roomId, username });
+                }}
+                placeholder="Type message..."
+                maxLength={500}
+                className="nb-text-input"
+              />
               <button
                 ref={emojiToggleRef}
                 type="button"
-                className="text-gray-400 hover:text-indigo-500 transition-colors"
+                className="nb-emoji-toggle"
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
               >
-                <Smile size={24} />
+                <Smile size={20} />
               </button>
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={!message.trim()}
-            className="w-[60px] h-[60px] bg-[#6a5af9] text-white flex items-center justify-center rounded-full shadow-lg shadow-indigo-100 enabled:hover:scale-110 enabled:active:scale-95 disabled:opacity-30 disabled:grayscale transition-all"
-          >
-            <Send size={24} className="ml-1" />
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={!message.trim()}
+              className="nb-send-btn"
+            >
+              <Send size={20} />
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
