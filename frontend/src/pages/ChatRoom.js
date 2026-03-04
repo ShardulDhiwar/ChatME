@@ -379,10 +379,11 @@ import React, { useState, useEffect, useRef } from 'react';
       border-left: 4px solid;
       padding: 6px 10px;
       margin-bottom: 10px;
+      background: #f0f0f0;
       font-size: clamp(0.75rem, 3vw, 0.82rem);
     }
-    .nb-bubble.me .nb-reply-preview { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
-    .nb-bubble.them .nb-reply-preview { border-color: #ff3c00; background: #fff8e1; color: #555; }
+    .nb-bubble.me .nb-reply-preview { border-color: #ffbb00; background: fff8e1; color: 555; }
+    .nb-bubble.them .nb-reply-preview { border-color: #bbff00; background: #fff8e1; color: #555; }
 
     .nb-reply-who { font-weight: 700; font-size: clamp(0.65rem, 2.8vw, 0.72rem); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2px; display: flex; align-items: center; gap: 4px; }
     .nb-reply-text { font-style: italic; opacity: 0.7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
