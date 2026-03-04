@@ -213,7 +213,7 @@ function Home() {
       <style>{styles}</style>
       <div className="nb-root">
         <h1 className="nb-title">ChatME</h1>
-        <div className="nb-subtitle">// Real-time messaging</div>
+        <div className="nb-subtitle">{'// Real-time messaging'}</div>
 
         <div className="nb-card">
           <button onClick={createNewRoom} className="nb-btn-primary">
