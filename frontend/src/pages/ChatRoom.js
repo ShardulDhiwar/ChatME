@@ -1,4 +1,4 @@
-  import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
   import { useParams, useNavigate } from 'react-router-dom';
   import {
     Send,
@@ -20,14 +20,26 @@
 
     * { box-sizing: border-box; }
 
+    .nb-chat-outer {
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      background: #e8e3db;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
+
     .nb-chat-root {
       font-family: 'Space Mono', monospace;
       display: flex;
       flex-direction: column;
       height: 100vh;
       height: 100dvh;
-      width: 100%;
+      width: 80%;
+      max-width: 100%;
       background: #f5f0e8;
+      box-shadow: 0 0 0 1px #ccc;
     }
 
     /* ── Username screen ── */
@@ -93,8 +105,8 @@
     .nb-login-input::placeholder { color: #bbb; font-weight: 400; }
 
     .nb-login-btn {
-      background: #ff3c00;
-      color: #fff;
+      background: #bbff00;
+      color: #111;
       border: 3px solid #111;
       box-shadow: 5px 5px 0 #111;
       padding: 20px;
@@ -219,7 +231,9 @@
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
-    .nb-icon-btn:hover { color: #ffd000; border-color: #ffd000; }
+    .nb-icon-btn:hover { color: #bbff00; border-color: #bbff00; }
+    .nb-icon-btn.user:hover { color: #ffd000; border-color: #ffd000; }
+    .nb-icon-btn.download:hover { color:#00aaff; border-color: #00aaff; }
     .nb-icon-btn.active { background: #ffd000; color: #111; border-color: #ffd000; }
     .nb-icon-btn.danger:hover { color: #ff3c00; border-color: #ff3c00; }
 
@@ -349,15 +363,15 @@
       word-break: break-word;
       position: relative;
     }
-    .nb-bubble.me { background: #00ccff ; color: #fff; box-shadow: 4px 4px 0 #111; }
-    .nb-bubble.them { background: #11ff00; color: #111; box-shadow: 4px 4px 0 #111; }
+    .nb-bubble.me { background: #bbff00 ; color: #111; box-shadow: 4px 4px 0 #111; }
+    .nb-bubble.them { background: #ffd000; color: #111; box-shadow: 4px 4px 0 #111; }
 
     .nb-sender-name {
       font-size: clamp(0.65rem, 2.8vw, 0.72rem);
       font-weight: 700;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: #ff3c00;
+      color: #111;
       margin-bottom: 6px;
     }
 
@@ -623,7 +637,7 @@
     .nb-emoji-toggle:hover { color: #ff3c00; }
 
     .nb-send-btn {
-      background: #ff3c00;
+      background: #bbff00;
       border: 3px solid #111;
       box-shadow: 4px 4px 0 #111;
       color: #fff;
@@ -850,245 +864,247 @@
     return (
       <>
         <style>{styles}</style>
-        <div className="nb-chat-root">
+        <div className="nb-chat-outer">
+          <div className="nb-chat-root">
 
-          {/* Header */}
-          <div className="nb-header">
-            <div className="nb-header-left">
-              <button onClick={() => navigate('/')} className="nb-back-btn" title="Leave Room">
-                <ArrowLeft size={20} />
-              </button>
-              <div className="nb-avatar">
-                {username.charAt(0).toUpperCase()}
-                <div className="nb-online-dot" />
-              </div>
-              <div className="nb-room-info">
-                <div className="nb-room-name">
-                  #{roomId.slice(0, 8)}
-                  <button onClick={copyRoomId} className="nb-copy-btn" title="Copy Room ID">
-                    <Copy size={12} />
-                  </button>
+            {/* Header */}
+            <div className="nb-header">
+              <div className="nb-header-left">
+                <button onClick={() => navigate('/')} className="nb-back-btn" title="Leave Room">
+                  <ArrowLeft size={20} />
+                </button>
+                <div className="nb-avatar">
+                  {username.charAt(0).toUpperCase()}
+                  <div className="nb-online-dot" />
                 </div>
-                <span className="nb-online-label">● Online</span>
-              </div>
-            </div>
-
-            <div className="nb-header-actions">
-              <button
-                ref={searchToggleRef}
-                className={`nb-icon-btn ${showSearch ? 'active' : ''}`}
-                onClick={() => setShowSearch(!showSearch)}
-                title="Search"
-              >
-                <Search size={18} />
-              </button>
-              <button
-                ref={usersToggleRef}
-                className={`nb-icon-btn ${showUsers ? 'active' : ''}`}
-                onClick={() => setShowUsers(!showUsers)}
-                title="Users"
-              >
-                <Users size={18} />
-                <span>{onlineUsers.length}</span>
-              </button>
-              <button onClick={exportChat} className="nb-icon-btn" title="Export" style={{ display: 'none' }}>
-                <Download size={18} />
-              </button>
-              <button onClick={clearChat} className="nb-icon-btn danger" title="Clear Chat">
-                <Trash2 size={18} />
-              </button>
-            </div>
-          </div>
-
-          {/* Users Panel */}
-          {showUsers && (
-            <div ref={usersPanelRef} className="nb-panel">
-              <div className="nb-panel-title">
-                Active Members
-                <span className="nb-badge">{onlineUsers.length}</span>
-              </div>
-              <div className="nb-users-list">
-                {onlineUsers.map((user, i) => (
-                  <div key={i} className="nb-user-chip">
-                    <div className="nb-user-dot" />
-                    {user}
+                <div className="nb-room-info">
+                  <div className="nb-room-name">
+                    #{roomId.slice(0, 8)}
+                    <button onClick={copyRoomId} className="nb-copy-btn" title="Copy Room ID">
+                      <Copy size={12} />
+                    </button>
                   </div>
-                ))}
+                  <span className="nb-online-label">● Online</span>
+                </div>
+              </div>
+
+              <div className="nb-header-actions">
+                <button
+                  ref={searchToggleRef}
+                  className={`nb-icon-btn ${showSearch ? 'active' : ''}`}
+                  onClick={() => setShowSearch(!showSearch)}
+                  title="Search"
+                >
+                  <Search size={18} />
+                </button>
+                <button
+                  ref={usersToggleRef}
+                  className={`nb-icon-btn user ${showUsers ? 'active' : ''}`}
+                  onClick={() => setShowUsers(!showUsers)}
+                  title="Users"
+                >
+                  <Users size={18} />
+                  <span>{onlineUsers.length}</span>
+                </button>
+                <button onClick={exportChat} className="nb-icon-btn download" title="Export" style={{ marginLeft: '8px' }}>
+                  <Download size={18} />
+                </button>
+                <button onClick={clearChat} className="nb-icon-btn danger" title="Clear Chat">
+                  <Trash2 size={18} />
+                </button>
               </div>
             </div>
-          )}
 
-          {/* Search Panel */}
-          {showSearch && (
-            <div ref={searchPanelRef} className="nb-panel" style={{ padding: '12px 20px' }}>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <input
-                  type="text"
-                  placeholder="Search messages..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="nb-search-input"
-                />
-                {searchQuery && (
-                  <button onClick={() => setSearchQuery('')} className="nb-action-btn">
-                    <X size={14} />
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Messages */}
-          <div className="nb-messages">
-            {filteredMessages.length === 0 && searchQuery && (
-              <div className="nb-empty">
-                <div className="nb-empty-icon">🔍</div>
-                <div className="nb-empty-text">No results found</div>
+            {/* Users Panel */}
+            {showUsers && (
+              <div ref={usersPanelRef} className="nb-panel">
+                <div className="nb-panel-title">
+                  Active Members
+                  <span className="nb-badge">{onlineUsers.length}</span>
+                </div>
+                <div className="nb-users-list">
+                  {onlineUsers.map((user, i) => (
+                    <div key={i} className="nb-user-chip">
+                      <div className="nb-user-dot" />
+                      {user}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
-            {filteredMessages.map((msg, index) => {
-              if (msg.type === 'system') {
+            {/* Search Panel */}
+            {showSearch && (
+              <div ref={searchPanelRef} className="nb-panel" style={{ padding: '12px 20px' }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <input
+                    type="text"
+                    placeholder="Search messages..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="nb-search-input"
+                  />
+                  {searchQuery && (
+                    <button onClick={() => setSearchQuery('')} className="nb-action-btn">
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Messages */}
+            <div className="nb-messages">
+              {filteredMessages.length === 0 && searchQuery && (
+                <div className="nb-empty">
+                  <div className="nb-empty-icon">🔍</div>
+                  <div className="nb-empty-text">No results found</div>
+                </div>
+              )}
+
+              {filteredMessages.map((msg, index) => {
+                if (msg.type === 'system') {
+                  return (
+                    <div key={index} className="nb-system-msg">
+                      <span className="nb-system-tag">{msg.message}</span>
+                    </div>
+                  );
+                }
+
+                const isMe = msg.username === username;
+
                 return (
-                  <div key={index} className="nb-system-msg">
-                    <span className="nb-system-tag">{msg.message}</span>
-                  </div>
-                );
-              }
-
-              const isMe = msg.username === username;
-
-              return (
-                <div key={msg.id || index} className={`nb-msg-row ${isMe ? 'me' : 'them'}`}>
-                  <div className="nb-msg-inner">
-                    <div className="nb-bubble-wrap">
-                      {/* Reaction Picker */}
-                      {showReactionPicker === msg.id && (
-                        <div ref={reactionPickerRef} className="nb-reaction-picker">
-                          {reactionEmojis.map((emoji) => (
-                            <button key={emoji} onClick={() => handleReaction(msg.id, emoji)} className="nb-emoji-btn-sm">{emoji}</button>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Bubble */}
-                      <div className={`nb-bubble ${isMe ? 'me' : 'them'}`}>
-                        {/* Reply preview */}
-                        {msg.replyTo && (
-                          <div className="nb-reply-preview">
-                            <div className="nb-reply-who"><Reply size={9} /> {msg.replyTo.username}</div>
-                            <div className="nb-reply-text">"{msg.replyTo.message}"</div>
-                          </div>
-                        )}
-
-                        {!isMe && <div className="nb-sender-name">{msg.username}</div>}
-
-                        <p style={{ margin: 0 }}>{msg.message}</p>
-
-                        {/* Reactions */}
-                        {msg.reactions && Object.keys(msg.reactions).length > 0 && (
-                          <div className="nb-reactions">
-                            {Object.entries(msg.reactions).map(([emoji, users]) => (
-                              <button
-                                key={emoji}
-                                className={`nb-reaction-badge ${users.includes(username) ? 'mine' : ''}`}
-                                onClick={() => handleReaction(msg.id, emoji)}
-                              >
-                                {emoji} {users.length}
-                              </button>
+                  <div key={msg.id || index} className={`nb-msg-row ${isMe ? 'me' : 'them'}`}>
+                    <div className="nb-msg-inner">
+                      <div className="nb-bubble-wrap">
+                        {/* Reaction Picker */}
+                        {showReactionPicker === msg.id && (
+                          <div ref={reactionPickerRef} className="nb-reaction-picker">
+                            {reactionEmojis.map((emoji) => (
+                              <button key={emoji} onClick={() => handleReaction(msg.id, emoji)} className="nb-emoji-btn-sm">{emoji}</button>
                             ))}
                           </div>
                         )}
+
+                        {/* Bubble */}
+                        <div className={`nb-bubble ${isMe ? 'me' : 'them'}`}>
+                          {/* Reply preview */}
+                          {msg.replyTo && (
+                            <div className="nb-reply-preview">
+                              <div className="nb-reply-who"><Reply size={9} /> {msg.replyTo.username}</div>
+                              <div className="nb-reply-text">"{msg.replyTo.message}"</div>
+                            </div>
+                          )}
+
+                          {!isMe && <div className="nb-sender-name">{msg.username}</div>}
+
+                          <p style={{ margin: 0 }}>{msg.message}</p>
+
+                          {/* Reactions */}
+                          {msg.reactions && Object.keys(msg.reactions).length > 0 && (
+                            <div className="nb-reactions">
+                              {Object.entries(msg.reactions).map(([emoji, users]) => (
+                                <button
+                                  key={emoji}
+                                  className={`nb-reaction-badge ${users.includes(username) ? 'mine' : ''}`}
+                                  onClick={() => handleReaction(msg.id, emoji)}
+                                >
+                                  {emoji} {users.length}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Side actions */}
+                      <div className="nb-side-actions">
+                        <button onClick={() => handleReply(msg)} className="nb-action-btn" title="Reply">
+                          <Reply size={13} />
+                        </button>
+                        <button onClick={() => setShowReactionPicker(showReactionPicker === msg.id ? null : msg.id)} className="nb-action-btn" title="React">
+                          <Smile size={13} />
+                        </button>
                       </div>
                     </div>
 
-                    {/* Side actions */}
-                    <div className="nb-side-actions">
-                      <button onClick={() => handleReply(msg)} className="nb-action-btn" title="Reply">
-                        <Reply size={13} />
-                      </button>
-                      <button onClick={() => setShowReactionPicker(showReactionPicker === msg.id ? null : msg.id)} className="nb-action-btn" title="React">
-                        <Smile size={13} />
-                      </button>
+                    {/* Meta row */}
+                    <div className="nb-meta">
+                      <span>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                      {isMe && <CheckCheck size={12} style={{ color: '#ff3c00' }} />}
                     </div>
                   </div>
-
-                  {/* Meta row */}
-                  <div className="nb-meta">
-                    <span>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                    {isMe && <CheckCheck size={12} style={{ color: '#ff3c00' }} />}
-                  </div>
-                </div>
-              );
-            })}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Typing indicator */}
-          {typingStatus && (
-            <div className="nb-typing">
-              <div className="nb-typing-dots">
-                <div className="nb-typing-dot" />
-                <div className="nb-typing-dot" />
-                <div className="nb-typing-dot" />
-              </div>
-              <span className="nb-typing-text">{typingStatus}</span>
+                );
+              })}
+              <div ref={messagesEndRef} />
             </div>
-          )}
 
-          {/* Input area */}
-          <div className="nb-input-area" style={{ position: 'relative' }}>
-            {/* Reply banner */}
-            {replyingTo && (
-              <div className="nb-reply-banner">
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="nb-reply-label">↩ Replying to {replyingTo.username}</div>
-                  <div className="nb-reply-quote">{replyingTo.message}</div>
+            {/* Typing indicator */}
+            {typingStatus && (
+              <div className="nb-typing">
+                <div className="nb-typing-dots">
+                  <div className="nb-typing-dot" />
+                  <div className="nb-typing-dot" />
+                  <div className="nb-typing-dot" />
                 </div>
-                <button onClick={cancelReply} className="nb-cancel-reply"><X size={13} /></button>
+                <span className="nb-typing-text">{typingStatus}</span>
               </div>
             )}
 
-            {/* Emoji picker */}
-            {showEmojiPicker && (
-              <div ref={emojiPickerRef} className="nb-emoji-picker-popup">
-                {emojis.map((emoji, i) => (
-                  <button key={i} onClick={() => addEmoji(emoji)} className="nb-emoji-btn">{emoji}</button>
-                ))}
-              </div>
-            )}
+            {/* Input area */}
+            <div className="nb-input-area" style={{ position: 'relative' }}>
+              {/* Reply banner */}
+              {replyingTo && (
+                <div className="nb-reply-banner">
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="nb-reply-label">↩ Replying to {replyingTo.username}</div>
+                    <div className="nb-reply-quote">{replyingTo.message}</div>
+                  </div>
+                  <button onClick={cancelReply} className="nb-cancel-reply"><X size={13} /></button>
+                </div>
+              )}
 
-            <form onSubmit={handleSubmit} className="nb-input-row">
-              <div className="nb-input-wrap">
-                <input
-                  type="text"
-                  value={message}
-                  onChange={(e) => {
-                    setMessage(e.target.value);
-                    socket.emit('typing', { room: roomId, username });
-                  }}
-                  placeholder="Type message..."
-                  maxLength={500}
-                  className="nb-text-input"
-                />
+              {/* Emoji picker */}
+              {showEmojiPicker && (
+                <div ref={emojiPickerRef} className="nb-emoji-picker-popup">
+                  {emojis.map((emoji, i) => (
+                    <button key={i} onClick={() => addEmoji(emoji)} className="nb-emoji-btn">{emoji}</button>
+                  ))}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="nb-input-row">
+                <div className="nb-input-wrap">
+                  <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => {
+                      setMessage(e.target.value);
+                      socket.emit('typing', { room: roomId, username });
+                    }}
+                    placeholder="Type message..."
+                    maxLength={500}
+                    className="nb-text-input"
+                  />
+                  <button
+                    ref={emojiToggleRef}
+                    type="button"
+                    className="nb-emoji-toggle"
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  >
+                    <Smile size={20} />
+                  </button>
+                </div>
+
                 <button
-                  ref={emojiToggleRef}
-                  type="button"
-                  className="nb-emoji-toggle"
-                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  type="submit"
+                  disabled={!message.trim()}
+                  className="nb-send-btn"
                 >
-                  <Smile size={20} />
+                  <Send size={20} />
                 </button>
-              </div>
-
-              <button
-                type="submit"
-                disabled={!message.trim()}
-                className="nb-send-btn"
-              >
-                <Send size={20} />
-              </button>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </>

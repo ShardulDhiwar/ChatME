@@ -46,9 +46,10 @@ const styles = `
     border: 2px solid #111;
     padding: 6px 14px;
     margin: 0 0 32px 0;
-    background: #ffd000;
+    background: #bbff00;
     text-transform: uppercase;
     text-align: center;
+    box-shadow: 8px 8px 0px #111;
   }
 
   .nb-card {
@@ -133,7 +134,7 @@ const styles = `
   .nb-input::placeholder { color: #bbb; font-weight: 400; }
 
   .nb-btn-secondary {
-    background: #ffd000;
+    background: #bbff00;
     color: #111;
     border: 3px solid #111;
     box-shadow: 5px 5px 0px #111;
