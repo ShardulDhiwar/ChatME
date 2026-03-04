@@ -228,7 +228,7 @@ function Home() {
           </form>
         </div>
 
-        <div className="nb-corner-tag">//Made By Shardul Dhiwar</div>
+        <div className="nb-corner-tag">{'//Made By Shardul Dhiwar'}</div>
       </div>
     </>
   );
