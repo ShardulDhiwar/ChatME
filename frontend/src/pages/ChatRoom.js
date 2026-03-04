@@ -837,7 +837,7 @@ import React, { useState, useEffect, useRef } from 'react';
         <>
           <style>{styles}</style>
           <div className="nb-username-screen">
-            <h2 className="nb-login-title">ChatME</h2>
+            <h2 className="nb-login-title">Chat-ME</h2>
             <div className="nb-login-card">
               <form onSubmit={handleUsernameSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <div>
