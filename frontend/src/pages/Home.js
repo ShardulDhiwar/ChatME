@@ -12,18 +12,10 @@ const styles = `
     font-family: 'Space Mono', monospace;
     background-color: #f5f0e8;
     background-image: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 39px,
-      #d4c9b0 39px,
-      #d4c9b0 40px
+      0deg, transparent, transparent 39px, #d4c9b0 39px, #d4c9b0 40px
     ),
     repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 39px,
-      #d4c9b0 39px,
-      #d4c9b0 40px
+      90deg, transparent, transparent 39px, #d4c9b0 39px, #d4c9b0 40px
     );
     min-height: 100vh;
     min-height: 100dvh;
@@ -31,29 +23,29 @@ const styles = `
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 24px 16px;
+    padding: 32px 20px;
   }
 
   .nb-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(3.5rem, 18vw, 7rem);
+    font-size: clamp(5rem, 22vw, 8rem);
     letter-spacing: 0.05em;
     color: #ff3c00;
     line-height: 1;
-    margin: 0 0 8px 0;
+    margin: 0 0 10px 0;
     text-shadow: 6px 6px 0px #ffd000;
     text-align: center;
   }
 
   .nb-subtitle {
     font-family: 'Space Mono', monospace;
-    font-size: clamp(0.6rem, 2.5vw, 0.75rem);
+    font-size: clamp(0.7rem, 3.5vw, 0.85rem);
     font-weight: 700;
-    letter-spacing: 0.3em;
+    letter-spacing: 0.25em;
     color: #111;
     border: 2px solid #111;
-    padding: 4px 12px;
-    margin: 0 0 28px 0;
+    padding: 6px 14px;
+    margin: 0 0 32px 0;
     background: #ffd000;
     text-transform: uppercase;
     text-align: center;
@@ -63,17 +55,12 @@ const styles = `
     background: #f5f0e8;
     border: 3px solid #111;
     box-shadow: 8px 8px 0px #111;
-    padding: 24px 20px;
+    padding: 32px 24px;
     width: 100%;
-    max-width: 440px;
+    max-width: 460px;
     display: flex;
     flex-direction: column;
     gap: 0;
-  }
-
-  @media (min-width: 480px) {
-    .nb-card { padding: 40px 36px; }
-    .nb-subtitle { margin-bottom: 36px; }
   }
 
   .nb-btn-primary {
@@ -81,9 +68,9 @@ const styles = `
     color: #fff;
     border: 3px solid #111;
     box-shadow: 5px 5px 0px #111;
-    padding: 16px 20px;
+    padding: 20px 24px;
     font-family: 'Space Mono', monospace;
-    font-size: clamp(0.78rem, 3vw, 0.95rem);
+    font-size: clamp(0.9rem, 4vw, 1rem);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -91,7 +78,7 @@ const styles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
     transition: transform 0.1s, box-shadow 0.1s;
     width: 100%;
     touch-action: manipulation;
@@ -104,7 +91,7 @@ const styles = `
   .nb-divider {
     display: flex;
     align-items: center;
-    margin: 22px 0;
+    margin: 26px 0;
   }
 
   .nb-divider-line { flex: 1; height: 3px; background: #111; }
@@ -112,28 +99,28 @@ const styles = `
   .nb-divider-text {
     background: #ffd000;
     border: 3px solid #111;
-    padding: 2px 10px;
-    font-size: 0.7rem;
+    padding: 3px 12px;
+    font-size: clamp(0.7rem, 3vw, 0.8rem);
     font-weight: 700;
     letter-spacing: 0.2em;
     color: #111;
   }
 
   .nb-input-label {
-    font-size: 0.62rem;
+    font-size: clamp(0.65rem, 2.8vw, 0.75rem);
     font-weight: 700;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: #111;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     display: block;
   }
 
   .nb-input {
     width: 100%;
-    padding: 14px 16px;
+    padding: 18px 16px;
     font-family: 'Space Mono', monospace;
-    font-size: 16px; /* 16px prevents iOS auto-zoom on focus */
+    font-size: 16px;
     font-weight: 700;
     border: 3px solid #111;
     background: #fff;
@@ -150,9 +137,9 @@ const styles = `
     color: #111;
     border: 3px solid #111;
     box-shadow: 5px 5px 0px #111;
-    padding: 16px 20px;
+    padding: 20px 24px;
     font-family: 'Space Mono', monospace;
-    font-size: clamp(0.78rem, 3vw, 0.95rem);
+    font-size: clamp(0.9rem, 4vw, 1rem);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -160,10 +147,10 @@ const styles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
     transition: transform 0.1s, box-shadow 0.1s;
     width: 100%;
-    margin-top: 12px;
+    margin-top: 14px;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
@@ -173,22 +160,20 @@ const styles = `
 
   .nb-corner-tag {
     position: fixed;
-    bottom: 14px;
-    right: 14px;
+    bottom: 16px;
+    right: 16px;
     background: #111;
     color: #ffd000;
     font-family: 'Space Mono', monospace;
-    font-size: 0.52rem;
+    font-size: 0.55rem;
     font-weight: 700;
     letter-spacing: 0.15em;
-    padding: 5px 8px;
+    padding: 6px 10px;
     text-transform: uppercase;
-    /* hide on very small screens so it doesn't overlap content */
   }
 
-  @media (max-width: 360px) {
-    .nb-corner-tag { display: none; }
-    .nb-title { font-size: 3rem; }
+  @media (max-width: 460px) {
+    .nb-card {padding: 28px 18px; }
   }
 `;
 
@@ -217,7 +202,7 @@ function Home() {
 
         <div className="nb-card">
           <button onClick={createNewRoom} className="nb-btn-primary">
-            <PlusCircle size={20} />
+            <PlusCircle size={22} />
             Create New Room
           </button>
 
@@ -237,13 +222,13 @@ function Home() {
               className="nb-input"
             />
             <button type="submit" className="nb-btn-secondary">
-              <LogIn size={20} />
+              <LogIn size={22} />
               Join Room
             </button>
           </form>
         </div>
 
-        <div className="nb-corner-tag">v1.0 // brutalist</div>
+        <div className="nb-corner-tag">//Made By Shardul Dhiwar</div>
       </div>
     </>
   );
