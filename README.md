@@ -2,7 +2,7 @@
 
 A simple real-time chat application built with React and Socket.IO.
 
-🚀 **Live Demo**: [https://chat-me-omega.vercel.app/](https://chat-me-omega.vercel.app/)
+🚀 **Live Demo**: [https://chat-me-omega.vercel.app/](https://chatme-ruddy.vercel.app/)
 
 ## Features
 
